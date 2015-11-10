@@ -10,10 +10,13 @@ class TomlParser
 
     def parse string
       {}.tap do |output|
+
         current_ptr = output
         current_values = nil
+
         each_line(string) do |line|
           parsed_line = @parser.parse(line)
+          next if parsed_line.nil?
 
           if [ TomlGrammar::KeyNest, TomlGrammar::KeyOfArray ].include?(parsed_line.class) &&
               current_ptr.is_a?(Array) && current_values
