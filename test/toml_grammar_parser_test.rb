@@ -1,7 +1,7 @@
 require 'treetop'
-require_relative '../toml_grammar'
+require_relative '../lib/toml_grammar'
 require 'minitest/autorun'
-Treetop.load 'toml_grammar.treetop'
+Treetop.load 'lib/toml_grammar.treetop'
 
 class TomlGrammerParserTest < MiniTest::Test
 
