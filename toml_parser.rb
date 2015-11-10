@@ -12,9 +12,8 @@ class TomlParser
       {}.tap do |output|
         current_ptr = output
         current_values = nil
-        string.split("\n").each do |line|
+        each_line(string) do |line|
           parsed_line = @parser.parse(line)
-
 
           if [ TomlGrammar::KeyNest, TomlGrammar::KeyOfArray ].include?(parsed_line.class) &&
               current_ptr.is_a?(Array) && current_values
@@ -48,6 +47,16 @@ class TomlParser
           current_ptr << current_values
           current_values = nil
         end
+      end
+    end
+
+    private
+
+    def each_line string
+      return if string.nil? || string.empty?
+
+      string.split("\n").each do |line|
+        yield line
       end
     end
 

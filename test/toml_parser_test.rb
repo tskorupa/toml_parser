@@ -5,6 +5,8 @@ class TomlParserTest < MiniTest::Test
 
   TEST_CASES = [
     # Defined as [ INPUT_STRING, EXPECTED_OUTPUT ]
+    [ nil, {} ],
+    [ "", {} ],
     [
       "[foo]\nk1 = \"a\"\nk2 = \"b\"\n\n[bar]\n\nk1 = 1\nk2 = 2\n",
       {
