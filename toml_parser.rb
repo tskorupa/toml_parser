@@ -17,9 +17,8 @@ class TomlParser
 
         generator.add parsed_line
       end
-      generator.finalize
 
-      return generator.complete_tree
+      generator.complete_tree
     end
 
     private

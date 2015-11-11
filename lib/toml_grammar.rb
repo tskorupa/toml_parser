@@ -1,3 +1,5 @@
+require 'treetop'
+
 module TomlGrammar
 
   class KeyOfArray < Treetop::Runtime::SyntaxNode

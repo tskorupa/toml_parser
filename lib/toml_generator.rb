@@ -3,10 +3,9 @@ require_relative 'toml_grammar'
 
 class TomlGenerator
 
-  attr_reader :complete_tree
-
   def initialize
-    @complete_tree = {}
+    @wip_tree = {}
+    @node = @current = nil
   end
 
   def add parsed_line
@@ -37,14 +36,17 @@ class TomlGenerator
     end
   end
 
-  def finalize
-    new_node
+  def complete_tree
+    @wip_tree.tap do
+      new_node
+      initialize
+    end
   end
 
   private
 
   def new_node
-    @complete_tree.deep_merge!(@node) unless @node.nil? || @node.empty?
+    @wip_tree.deep_merge!(@node) unless @node.nil? || @node.empty?
     @node = @current = {}
   end
 
