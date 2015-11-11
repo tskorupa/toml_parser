@@ -1,5 +1,5 @@
 require 'treetop'
-require_relative 'lib/toml_grammar'
+require_relative 'lib/toml_generator'
 
 class TomlParser
 
@@ -9,48 +9,17 @@ class TomlParser
   class << self
 
     def parse string
-      {}.tap do |output|
+      generator = TomlGenerator.new
 
-        current_ptr = output
-        current_values = nil
+      each_line(string) do |line|
+        parsed_line = @parser.parse(line)
+        next if parsed_line.nil?
 
-        each_line(string) do |line|
-          parsed_line = @parser.parse(line)
-          next if parsed_line.nil?
-
-          if [ TomlGrammar::KeyNest, TomlGrammar::KeyOfArray ].include?(parsed_line.class) &&
-              current_ptr.is_a?(Array) && current_values
-            current_ptr << current_values
-            current_values = nil
-          end
-
-          case parsed_line.class.to_s
-          when TomlGrammar::KeyNest.to_s then
-            parsed_line.value.each do |key|
-              current_ptr[ key ] ||= {}
-              current_ptr = current_ptr[ key ]
-            end
-          when TomlGrammar::KeyOfHash.to_s then
-            output[ parsed_line.value ] ||= {}
-            current_ptr = output[ parsed_line.value ]
-          when TomlGrammar::KeyOfArray.to_s then
-            output[ parsed_line.value ] ||= []
-            current_ptr = output[ parsed_line.value ]
-            current_values = {}
-          when TomlGrammar::KeyValue.to_s then
-            if current_ptr.is_a? Hash
-              current_ptr.merge! parsed_line.value
-            elsif current_ptr.is_a? Array
-              current_values.merge! parsed_line.value
-            end
-          end
-        end
-
-        if current_ptr.is_a?(Array) && current_values
-          current_ptr << current_values
-          current_values = nil
-        end
+        generator.add parsed_line
       end
+      generator.finalize
+
+      return generator.complete_tree
     end
 
     private
