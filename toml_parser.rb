@@ -1,10 +1,7 @@
-require 'treetop'
+require_relative 'lib/toml_scanner'
 require_relative 'lib/toml_generator'
 
 class TomlParser
-
-  Treetop.load 'lib/toml_grammar.treetop'
-  @parser = TomlGrammarParser.new
 
   class << self
 
@@ -12,7 +9,7 @@ class TomlParser
       generator = TomlGenerator.new
 
       each_line(string) do |line|
-        parsed_line = @parser.parse(line)
+        parsed_line = TomlScanner.scan(line)
         next if parsed_line.nil?
 
         generator.add parsed_line
