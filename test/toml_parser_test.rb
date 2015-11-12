@@ -1,59 +1,31 @@
 require_relative '../toml_parser'
+require 'mocha/test_unit'
 require 'minitest/autorun'
 
 class TomlParserTest < MiniTest::Test
 
-  TEST_CASES = [
-    # Defined as [ INPUT_STRING, EXPECTED_OUTPUT ]
-    [ nil, {} ],
-    [ "", {} ],
-    [
-      "[foo]\nk1 = \"a\"\nk2 = \"b\"\n\n[bar]\n\nk1 = 1\nk2 = 2\n",
-      {
-        'foo' => {
-          'k1' => 'a',
-          'k2' => 'b',
-        },
-        'bar' => {
-          'k1' => 1,
-          'k2' => 2,
-        },
-      }
-    ],
-    [
-      "[foo.bar.quux]\n\nk1 = \"a\"\nk2 = \"b\"\n",
-      {
-        'foo' => {
-          'bar' => {
-            'quux' => {
-              'k1' => 'a',
-              'k2' => 'b',
-            },
-          },
-        },
-      }
-    ],
-    [
-      "[[foo]]\n\nk1 = \"a\"\nk2 = \"b\"\n\n[[foo]]\n\nk1 = \"c\"\nk2 = \"d\"\n",
-      {
-        'foo' => [
-          {
-            'k1' => 'a',
-            'k2' => 'b',
-          },
-          {
-            'k1' => 'c',
-            'k2' => 'd',
-          },
-        ],
-      }
-    ]
-  ]
-
   def test_parser
-    TEST_CASES.each do |input, expected_output|
-      assert_equal expected_output, TomlParser.parse(input)
+    [ 0, 1, 2 ].each do |iterations|
+      assert run_parser(iterations: iterations, line: "foo")
     end
+  end
+
+  private
+
+  def run_parser iterations:, line:
+    input_arr = []
+
+    mock = MiniTest::Mock.new
+    TomlGenerator.expects(:new).returns mock
+    TomlScanner.expects(:scan).times( iterations ).returns line
+    iterations.times do
+      mock.expect(:add, "garbage", [ line ] )
+      input_arr << line
+    end
+    mock.expect :complete_tree, "more garbage"
+
+    TomlParser.parse( input_arr.join("\n") )
+    mock.verify
   end
 
 end
