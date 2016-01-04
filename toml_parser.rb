@@ -2,9 +2,7 @@ require_relative 'lib/toml_scanner'
 require_relative 'lib/toml_generator'
 
 class TomlParser
-
   class << self
-
     def parse string
       generator = TomlGenerator.new
 
@@ -27,7 +25,5 @@ class TomlParser
         yield line
       end
     end
-
   end
-
 end

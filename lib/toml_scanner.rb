@@ -1,7 +1,6 @@
 require 'treetop'
 
 class TomlScanner
-
   Treetop.load 'lib/toml_grammar.treetop'
   @parser = TomlGrammarParser.new
 
@@ -9,5 +8,4 @@ class TomlScanner
     return if line.nil?
     @parser.parse line
   end
-
 end

@@ -4,7 +4,6 @@ require 'mocha/mini_test'
 require 'minitest/autorun'
 
 class TomlScannerTest < MiniTest::Test
-
   TEST_CASES = [
     # [ SCANER_INPUT_LINE, EXPECTED_SCANNER_OUTPUT_KLASS ]
     [ '[[foo]]', TomlGrammar::KeyOfArray ],
@@ -24,5 +23,4 @@ class TomlScannerTest < MiniTest::Test
       assert_equal expected_klass, parsed_line.class
     end
   end
-
 end

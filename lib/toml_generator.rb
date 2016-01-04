@@ -2,52 +2,71 @@ require 'deep_merge'
 require_relative 'toml_grammar'
 
 class TomlGenerator
-
   def initialize
     @wip_tree = {}
     @node = @current = nil
   end
 
   def add parsed_line
-    case parsed_line.class.to_s
-    when TomlGrammar::KeyNest.to_s then
-      new_node
-      parsed_line.value.each do |key|
-        @current[ key ] ||= {}
-        @current = @current[ key ]
-      end
-    when TomlGrammar::KeyOfHash.to_s then
-      new_node
-      key = parsed_line.value
-      @current[ key ] ||= {}
-      @current = @current[ key ]
-    when TomlGrammar::KeyOfArray.to_s then
-      new_node
-      key = parsed_line.value
-      @current[ key ] ||= []
-      @current = @current[ key ]
-    when TomlGrammar::KeyValue.to_s then
-      if @current.is_a? Hash
-        @current.merge! parsed_line.value
-      elsif @current.is_a? Array
-        @current << parsed_line.value
-        @current = @current.first
-      end
+    @subject = parsed_line.value
+    klass = parsed_line.class.to_s
+
+    determine_default_value(klass)
+
+    if TomlGrammar::KeyValue.to_s == klass
+      handle_key_value
+      return
     end
+
+    reset
+    iterate_over
   end
 
   def complete_tree
     @wip_tree.tap do
-      new_node
+      reset
       initialize
     end
   end
 
   private
 
-  def new_node
+  def determine_default_value klass
+    @default_value = case klass
+                     when TomlGrammar::KeyOfArray.to_s then []
+                     when TomlGrammar::KeyNest.to_s, TomlGrammar::KeyOfHash.to_s then {}
+                     end
+  end
+
+  def handle_key_value
+    if @current.is_a? Hash
+      @current.merge! @subject
+    elsif @current.is_a? Array
+      @current << @subject
+      @current = @current.first
+    end
+  end
+
+  def iterate_over
+    if @subject.is_a? Array
+      @subject.each do |key|
+        @key = key
+        set_current
+      end
+    else
+      @key = @subject
+      set_current
+    end
+    @key = nil
+  end
+
+  def reset
     @wip_tree.deep_merge!(@node) unless @node.nil? || @node.empty?
     @node = @current = {}
   end
 
+  def set_current
+    @current[ @key ] ||= @default_value.dup
+    @current = @current[ @key ]
+  end
 end

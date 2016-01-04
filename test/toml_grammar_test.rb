@@ -3,7 +3,6 @@ require 'mocha/mini_test'
 require 'minitest/autorun'
 
 class TomlGrammarTest < MiniTest::Test
-
   def test_key_of_array_klass
     TomlGrammar::KeyOfArray.any_instance.stubs initialize: nil, text_value: '[[foo]]'
     assert_equal 'foo', TomlGrammar::KeyOfArray.new.value
@@ -16,7 +15,7 @@ class TomlGrammarTest < MiniTest::Test
 
   def test_key_nest_klass
     TomlGrammar::KeyNest.any_instance.stubs initialize: nil, text_value: '[foo.bar.baz]'
-    assert_equal [ 'foo', 'bar', 'baz' ], TomlGrammar::KeyNest.new.value
+    assert_equal %w( foo bar baz ), TomlGrammar::KeyNest.new.value
   end
 
   def test_value_klass
@@ -39,5 +38,4 @@ class TomlGrammarTest < MiniTest::Test
     TomlGrammar::IntegerLiteral.any_instance.stubs initialize: nil, text_value: '1000'
     assert_equal 1000, TomlGrammar::IntegerLiteral.new.value
   end
-
 end

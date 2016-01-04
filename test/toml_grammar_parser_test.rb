@@ -4,14 +4,13 @@ require 'minitest/autorun'
 Treetop.load 'lib/toml_grammar.treetop'
 
 class TomlGrammerParserTest < MiniTest::Test
-
   def setup
     @parser = TomlGrammarParser.new
   end
 
   TEST_CASES = [
     # Defined as [ INPUT_STRING, EXPECTED_OUTPUT ]
-    [ '[foo.bar.baz]', [ 'foo', 'bar', 'baz' ] ],
+    [ '[foo.bar.baz]', %w( foo bar baz ) ],
     [ '[[foobarbaz]]', 'foobarbaz' ],
     [ '[foo]', 'foo' ],
     [ 'foo', nil ],
@@ -22,12 +21,12 @@ class TomlGrammerParserTest < MiniTest::Test
     [ '-1', -1 ],
     [ '0', 0 ],
     [ '9999', 9999 ],
-    [ '"a"', "\"a\"" ],
+    [ '"a"', "\"a\"" ]
   ]
 
   def test_parser
     TEST_CASES.each do |input, expected_output|
-      result = @parser.parse( input )
+      result = @parser.parse(input)
 
       if expected_output.nil?
         assert_nil result
@@ -36,5 +35,4 @@ class TomlGrammerParserTest < MiniTest::Test
       end
     end
   end
-
 end

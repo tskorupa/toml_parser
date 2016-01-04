@@ -2,7 +2,6 @@ require_relative '../lib/toml_generator'
 require 'minitest/autorun'
 
 class TomlGeneratorTest < MiniTest::Test
-
   def setup
     @generator = TomlGenerator.new
   end
@@ -31,12 +30,16 @@ class TomlGeneratorTest < MiniTest::Test
     ],
     [
       [
-        [ TomlGrammar::KeyNest, [ 'foo', 'bar', 'quux' ] ],
+        [ TomlGrammar::KeyNest, %w( foo bar quux ) ],
         [ TomlGrammar::KeyValue, { 'k1' => 'a' } ],
         [ TomlGrammar::KeyValue, { 'k2' => 'b' } ]
       ],
       {
-        'foo' => { 'bar' => { 'quux' => { 'k1' => 'a', 'k2' => 'b' } } }
+        'foo' => {
+          'bar' => {
+            'quux' => { 'k1' => 'a', 'k2' => 'b' }
+          }
+        }
       }
     ],
     [
@@ -49,7 +52,10 @@ class TomlGeneratorTest < MiniTest::Test
         [ TomlGrammar::KeyValue, { 'k2' => 'd' } ]
       ],
       {
-        'foo' => [{'k1' => 'a', 'k2' => 'b'}, {'k1' => 'c','k2' => 'd'}]
+        'foo' => [
+          { 'k1' => 'a', 'k2' => 'b' },
+          { 'k1' => 'c', 'k2' => 'd' }
+        ]
       }
     ]
   ]
@@ -72,5 +78,4 @@ class TomlGeneratorTest < MiniTest::Test
     obj.expect :value, value
     obj
   end
-
 end
