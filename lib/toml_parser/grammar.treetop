@@ -1,0 +1,45 @@
+module TomlParser
+  grammar Grammar
+
+    rule expression
+      key_of_hash / key_of_array / key_nest / key_value / assignment / string / integer / whitespace
+    end
+
+    rule key_of_array
+      '[[' key ']]' <KeyOfArray>
+    end
+
+    rule key_of_hash
+      '[' key ']' <KeyOfHash>
+    end
+
+    rule key_nest
+      '[' key ('.' key)+ ']' <KeyNest>
+    end
+
+    rule key_value
+      key whitespace? assignment whitespace? (string / integer) <KeyValue>
+    end
+
+    rule assignment
+      '='
+    end
+
+    rule key
+      [a-zA-Z]+ ([0-9]+)?
+    end
+
+    rule string
+      '"' [a-zA-Z0-9]+ '"' <StringLiteral>
+    end
+
+    rule integer
+      '-'? [0-9]+ <IntegerLiteral>
+    end
+
+    rule whitespace
+      [ \t]+
+    end
+
+  end
+end

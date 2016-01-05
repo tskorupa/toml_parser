@@ -1,11 +1,11 @@
 require 'treetop'
-require_relative '../lib/toml_grammar'
+require_relative '../../lib/toml_parser/grammar'
 require 'minitest/autorun'
-Treetop.load 'lib/toml_grammar.treetop'
 
-class TomlGrammerParserTest < MiniTest::Test
+class GrammerParserTest < MiniTest::Test
   def setup
-    @parser = TomlGrammarParser.new
+    Treetop.load 'lib/toml_parser/grammar.treetop'
+    @parser = TomlParser::GrammarParser.new
   end
 
   TEST_CASES = [
