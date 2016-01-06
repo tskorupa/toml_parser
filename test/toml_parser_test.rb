@@ -4,7 +4,8 @@ require 'minitest/autorun'
 
 class TomlParserTest < MiniTest::Test
   def test_toml_parser
-    input, output = :input, :output
+    input = :input
+    output = :output
     TomlParser::Parser.expects(:parse).with(input).returns(output)
 
     assert_equal output, TomlParser.load(input)
