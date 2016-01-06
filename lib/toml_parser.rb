@@ -1,7 +1,5 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-
-require 'toml_parser/version'
-require 'toml_parser/parser'
+require_relative 'toml_parser/version'
+require_relative 'toml_parser/parser'
 
 module TomlParser
   def self.load content

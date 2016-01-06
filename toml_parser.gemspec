@@ -1,7 +1,5 @@
 # coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'toml_parser/version'
+require_relative 'lib/toml_parser/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'toml_parser'
@@ -25,6 +23,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.10'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'minitest'
+
+  spec.required_ruby_version = '~> 2.1'
 
   spec.add_runtime_dependency 'treetop', '~> 1.6'
   spec.add_runtime_dependency 'deep_merge', '~> 1.0'
